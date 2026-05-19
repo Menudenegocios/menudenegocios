@@ -103,7 +103,8 @@ app.post('/api/asaas/create-customer', async (req, res) => {
       email,
       cpfCnpj,
       phone,
-      externalReference: user.id
+      externalReference: user.id,
+      notificationDisabled: true
     });
 
     // Salvar asaas_customer_id no perfil
@@ -144,7 +145,8 @@ app.post('/api/asaas/create-payment', async (req, res) => {
       value,
       dueDate: dueDate || new Date(Date.now() + 86400000).toISOString().split('T')[0], // 1 dia
       description: description || 'Pagamento Menu de Negócios',
-      externalReference: user.id
+      externalReference: user.id,
+      notificationDisabled: true
     });
 
     res.json(payment);
@@ -190,7 +192,8 @@ app.post('/api/asaas/create-subscription', async (req, res) => {
       nextDueDate: new Date(Date.now() + 86400000).toISOString().split('T')[0],
       cycle: cycle || 'MONTHLY',
       description: `Assinatura Plano ${planId.toUpperCase()}`,
-      externalReference: user.id
+      externalReference: user.id,
+      notificationDisabled: true
     });
 
     // Buscar a primeira fatura da assinatura para pegar a invoiceUrl

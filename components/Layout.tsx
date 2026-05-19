@@ -48,8 +48,12 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           <div className="hidden xl:flex items-center gap-6">
             {user ? (
               <div className="flex items-center gap-4 p-2 pr-4 rounded-full border bg-white border-gray-200">
-                <Link to="/profile" className="w-10 h-10 rounded-full bg-brand-primary flex items-center justify-center text-white text-sm font-black">
-                  {user.name.charAt(0)}
+                <Link to="/profile" className="w-10 h-10 rounded-full bg-brand-primary flex items-center justify-center text-white text-sm font-black overflow-hidden hover:scale-105 transition-transform">
+                  {user.photo_url ? (
+                    <img src={user.photo_url} alt={user.name} className="w-full h-full object-cover" />
+                  ) : (
+                    user.name.charAt(0)
+                  )}
                 </Link>
                 <Link to="/dashboard" className="text-xs font-black uppercase tracking-widest hover:text-brand-primary transition-colors text-slate-700">Painel</Link>
                 <button onClick={logout} className="text-slate-400 hover:text-rose-500 transition-colors"><LogOut className="w-5 h-5" /></button>

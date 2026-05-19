@@ -19,13 +19,26 @@ import { FinanceViewV2 } from '../components/financial/FinanceViewV2';
 export const BusinessSuite: React.FC = () => {
   const { user } = useAuth();
   const location = useLocation();
-  const [activeTab, setActiveTab] = useState<'home' | 'crm' | 'finance' | 'menuzap_pro'>('home');
+  
+  const [currentTool, setCurrentTool] = useState<'crm' | 'finance'>('crm');
+  const [activeSubTab, setActiveSubTab] = useState<'explain' | 'tool'>('tool');
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
     const tab = params.get('tab');
-    if (tab && ['home', 'crm', 'finance', 'menuzap_pro'].includes(tab)) {
-      setActiveTab(tab as any);
+    if (tab === 'finance') {
+      setCurrentTool('finance');
+      setActiveSubTab('tool');
+    } else if (tab === 'finance_home') {
+      setCurrentTool('finance');
+      setActiveSubTab('explain');
+    } else if (tab === 'crm_home') {
+      setCurrentTool('crm');
+      setActiveSubTab('explain');
+    } else {
+      // Padrão ou tab === 'crm'
+      setCurrentTool('crm');
+      setActiveSubTab('tool');
     }
   }, [location.search]);
 
@@ -51,6 +64,12 @@ export const BusinessSuite: React.FC = () => {
       );
   }
 
+  const ToolIcon = currentTool === 'crm' ? Briefcase : DollarSign;
+  const toolTitle = currentTool === 'crm' ? 'CRM & Vendas' : 'Financeiro';
+  const toolSub = currentTool === 'crm' 
+    ? 'O PAINEL DE CONTROLE DO SEU SUCESSO COMERCIAL.' 
+    : 'CONTROLE TOTAL DE FLUXO DE CAIXA E ENTRADAS/SAÍDAS.';
+
   return (
     <div className="max-w-6xl mx-auto space-y-12 pb-20 pt-4 px-4">
       <div className="bg-[#0F172A] rounded-[3rem] p-8 md:p-12 text-white relative overflow-hidden shadow-2xl border border-white/5">
@@ -58,40 +77,37 @@ export const BusinessSuite: React.FC = () => {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-8">
             <div className="flex items-center gap-6">
               <div className="p-5 bg-indigo-500/10 backdrop-blur-xl rounded-[2rem] border border-white/10 shadow-xl">
-                 <Briefcase className="h-10 w-10 text-brand-primary" />
+                 <ToolIcon className="h-10 w-10 text-brand-primary" />
               </div>
               <div>
                  <h1 className="text-4xl md:text-5xl font-black tracking-tight leading-none mb-2">
-                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4F46E5] via-[#F67C01] to-[#9333EA] italic uppercase">CRM & Vendas</span>
+                    <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#4F46E5] via-[#F67C01] to-[#9333EA] italic uppercase">{toolTitle}</span>
                  </h1>
-                 <p className="text-slate-400 text-sm font-bold uppercase tracking-[0.2em]">O PAINEL DE CONTROLE DO SEU SUCESSO COMERCIAL.</p>
+                 <p className="text-slate-400 text-sm font-bold uppercase tracking-[0.2em]">{toolSub}</p>
               </div>
-            </div>
-            
-            <div className="flex gap-3">
-               <button onClick={() => setActiveTab('crm')} className="bg-[#F67C01] text-white px-8 py-3 rounded-2xl font-black text-[10px] uppercase tracking-widest hover:bg-orange-600 transition-all shadow-xl active:scale-95 flex items-center gap-2">
-                  <Layout className="w-4 h-4" /> MEU PIPELINE
-               </button>
             </div>
           </div>
 
           <div className="flex p-1.5 mt-12 bg-white/5 backdrop-blur-md rounded-[2rem] border border-white/10 w-fit overflow-x-auto scrollbar-hide gap-1">
               {[
-                { id: 'home', label: 'Início', desc: 'Boas-vindas', icon: HomeIcon },
-                { id: 'crm', label: 'CRM & Vendas', desc: 'Gestão de leads', icon: Briefcase },
-                { id: 'finance', label: 'Financeiro', desc: 'Financeiro', icon: DollarSign },
-                // { id: 'menuzap_pro', label: 'MENUZAP', desc: 'Agentes de IA', icon: Zap }
+                { id: 'explain', label: 'Início', desc: 'Explicação', icon: HomeIcon },
+                { 
+                  id: 'tool', 
+                  label: currentTool === 'crm' ? 'Funil & Clientes' : 'Fluxo de Caixa', 
+                  desc: currentTool === 'crm' ? 'Gestão comercial' : 'Financeiro', 
+                  icon: currentTool === 'crm' ? Briefcase : DollarSign 
+                },
               ].map((tab) => (
                 <button 
                   key={tab.id} 
-                  onClick={() => setActiveTab(tab.id as any)} 
-                  className={`flex flex-col items-center justify-center min-w-[110px] px-6 py-3 rounded-[1.4rem] transition-all duration-300 whitespace-nowrap ${activeTab === tab.id ? 'bg-[#F67C01] text-white shadow-xl scale-105' : 'text-slate-400 hover:bg-white/10'}`}
+                  onClick={() => setActiveSubTab(tab.id as any)} 
+                  className={`flex flex-col items-center justify-center min-w-[110px] px-6 py-3 rounded-[1.4rem] transition-all duration-300 whitespace-nowrap ${activeSubTab === tab.id ? 'bg-[#F67C01] text-white shadow-xl scale-105' : 'text-slate-400 hover:bg-white/10'}`}
                 >
                   <div className="flex items-center gap-2 mb-0.5">
-                    <tab.icon className={`w-3.5 h-3.5 ${activeTab === tab.id ? 'text-white' : 'text-brand-primary'}`} />
+                    <tab.icon className={`w-3.5 h-3.5 ${activeSubTab === tab.id ? 'text-white' : 'text-brand-primary'}`} />
                     <span className="font-black text-[10px] tracking-widest italic">{tab.label}</span>
                   </div>
-                  <span className={`text-[8px] font-medium opacity-60 ${activeTab === tab.id ? 'text-white' : ''}`}>{tab.desc}</span>
+                  <span className={`text-[8px] font-medium opacity-60 ${activeSubTab === tab.id ? 'text-white' : ''}`}>{tab.desc}</span>
                 </button>
               ))}
           </div>
@@ -100,29 +116,44 @@ export const BusinessSuite: React.FC = () => {
       </div>
 
       <div className="animate-[fade-in_0.4s_ease-out]">
-        {activeTab === 'home' && (
+        {currentTool === 'crm' && activeSubTab === 'explain' && (
             <SectionLanding 
-                title="Sua central de inteligência e gestão."
+                title="Sua central de inteligência e gestão de leads."
                 subtitle="CRM & Vendas"
-                description="O painel de controle definitivo para o seu negócio. No módulo de Gestão Business, você organiza seu funil de vendas, controla finanças pessoais e empresariais, e gerencia sua agenda de forma profissional e integrada."
-                summaryText="A Gestão Business é a espinha dorsal da sua operação. Aqui você gerencia o relacionamento com seus clientes através do CRM, controla seu fluxo de caixa e organiza sua agenda profissional, tudo em uma interface integrada e simplificada."
+                description="O painel de controle definitivo para suas vendas. No módulo de CRM, você organiza seu funil de vendas de forma visual (Kanban), acompanha o histórico de interações com os clientes, cria follow-ups e gerencia toda a sua carteira comercial de forma profissional e integrada."
+                summaryText="O CRM é a espinha dorsal do seu crescimento comercial. Gerencie leads qualificados, mova-os pelo pipeline, agende lembretes de contato e tenha uma visão clara do seu potencial de receita."
                 benefits={[
-                "CRM Kanban: Movimente seus leads e visualize sua previsão de receita.",
-                "Carteira de Clientes: Centralize o histórico e dados de quem confia em você.",
-                "Fluxo de Caixa: Separe suas contas PF e PJ com lançamentos simplificados.",
-                "Agenda Pro: Organize horários de serviços e reuniões em um calendário único.",
-                "Menuzap Pro: Conecte seu WhatsApp diretamente ao seu funil de vendas."
+                  "CRM Kanban: Movimente seus leads e visualize sua previsão de receita.",
+                  "Carteira de Clientes: Centralize o histórico e dados de quem confia em você.",
+                  "Follow-ups Rápidos: Agende tarefas e registre cada contato feito com seus leads.",
+                  "Importação e Exportação: Traga seus contatos via planilha XLSX com um clique."
                 ]}
-                ctaLabel="ABRIR MEU CRM & VENDAS"
-                onStart={() => setActiveTab('crm')}
+                ctaLabel="ABRIR PIPELINE DE VENDAS"
+                onStart={() => setActiveSubTab('tool')}
                 icon={Briefcase}
                 accentColor="brand"
             />
         )}
-        {activeTab === 'crm' && <CRMView user_id={user.id} />}
-        {/* Fix: Added missing FinanceView component mapping */}
-        {activeTab === 'finance' && <FinanceViewV2 user_id={user.id} />}
-        {/* {activeTab === 'menuzap_pro' && <MenuzapProView user={user} />} */}
+        {currentTool === 'finance' && activeSubTab === 'explain' && (
+            <SectionLanding 
+                title="Seu controle financeiro simplificado e eficiente."
+                subtitle="Financeiro"
+                description="O painel financeiro ideal para sua empresa. Controle seu fluxo de caixa, registre entradas e saídas, gerencie categorias de receitas e despesas, e tenha relatórios visuais claros para tomar decisões estratégicas seguras."
+                summaryText="O módulo Financeiro ajuda você a manter a saúde do seu caixa sob controle. Acompanhe saldos, receitas pendentes, despesas fixas e variáveis sem a complexidade de planilhas confusas."
+                benefits={[
+                  "Fluxo de Caixa: Registre entradas e saídas de forma extremamente simples.",
+                  "Categorias Inteligentes: Organize seus lançamentos para saber exatamente onde gasta.",
+                  "Resumo Mensal: Gráficos e indicadores rápidos de receitas, despesas e saldo.",
+                  "Contas PF e PJ: Separe e organize suas finanças com total clareza."
+                ]}
+                ctaLabel="ABRIR CONTROLE FINANCEIRO"
+                onStart={() => setActiveSubTab('tool')}
+                icon={DollarSign}
+                accentColor="brand"
+            />
+        )}
+        {currentTool === 'crm' && activeSubTab === 'tool' && <CRMView user_id={user.id} />}
+        {currentTool === 'finance' && activeSubTab === 'tool' && <FinanceViewV2 user_id={user.id} />}
       </div>
     </div>
   );

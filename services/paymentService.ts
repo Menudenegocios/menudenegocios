@@ -1,8 +1,8 @@
 import { supabase } from './supabaseClient';
 
 export const paymentService = {
-  checkout: async (checkoutData: { planId: string, billingType: string, cycle: string, cpfCnpj?: string }) => {
-    const { data, error } = await supabase.functions.invoke('asaas', {
+  checkout: async (checkoutData: { planId: string, billingType: string, cycle: string, value?: number, cpfCnpj?: string, installments?: number }) => {
+    const { data, error } = await supabase.functions.invoke('payment', {
       body: { action: 'checkout', ...checkoutData }
     });
 
@@ -17,7 +17,7 @@ export const paymentService = {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) throw new Error('Usuário não autenticado.');
 
-    const { data, error } = await supabase.functions.invoke('asaas', {
+    const { data, error } = await supabase.functions.invoke('payment', {
       body: { action: 'create-customer', ...customerData }
     });
 
@@ -32,7 +32,7 @@ export const paymentService = {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) throw new Error('Usuário não autenticado.');
 
-    const { data, error } = await supabase.functions.invoke('asaas', {
+    const { data, error } = await supabase.functions.invoke('payment', {
       body: { action: 'create-subscription', planId, billingType, cycle }
     });
 
@@ -47,7 +47,7 @@ export const paymentService = {
     const { data: { session } } = await supabase.auth.getSession();
     if (!session) throw new Error('Usuário não autenticado.');
 
-    const { data, error } = await supabase.functions.invoke('asaas', {
+    const { data, error } = await supabase.functions.invoke('payment', {
       body: { action: 'create-payment', ...paymentData }
     });
 

@@ -157,17 +157,32 @@ serve(async (req) => {
 
     if (!customerId) {
       const cpfCnpj = profile.cpf_cnpj?.replace(/\D/g, '') || params.cpfCnpj?.replace(/\D/g, '')
-      if (!cpfCnpj) throw new Error('CPF/CNPJ obrigatório.')
       
-      const customer = await asaasFetch('/customers', 'POST', {
-        name: profile.business_name || profile.name || user.email,
-        email: user.email,
-        cpfCnpj,
-        mobilePhone: profile.phone?.replace(/\D/g, '') || undefined,
-        externalReference: user.id
-      })
-      customerId = customer.id
-      await supabase.from('profiles').update({ asaas_customer_id: customerId }).eq('user_id', user.id)
+      if (cpfCnpj) {
+        try {
+          const listRes = await asaasFetch(`/customers?cpfCnpj=${cpfCnpj}`)
+          if (listRes.data && listRes.data.length > 0) {
+            customerId = listRes.data[0].id
+            await supabase.from('profiles').update({ asaas_customer_id: customerId }).eq('user_id', user.id)
+          }
+        } catch (searchErr) {
+          console.error('[Asaas Customer Search Error]', searchErr.message)
+        }
+      }
+
+      if (!customerId) {
+        if (!cpfCnpj) throw new Error('CPF/CNPJ obrigatório.')
+        const customer = await asaasFetch('/customers', 'POST', {
+          name: profile.business_name || profile.name || user.email,
+          email: user.email,
+          cpfCnpj,
+          mobilePhone: profile.phone?.replace(/\D/g, '') || undefined,
+          externalReference: user.id,
+          notificationDisabled: true
+        })
+        customerId = customer.id
+        await supabase.from('profiles').update({ asaas_customer_id: customerId }).eq('user_id', user.id)
+      }
     }
 
     if (action === 'create-payment' || action === 'checkout') {
@@ -182,8 +197,19 @@ serve(async (req) => {
         dueDate: today.toISOString().split('T')[0],
         description: description || `Assinatura Vencer Hub - ${planId}`,
         externalReference: user.id,
-        splits: [{ walletId: VENCER_HUB_WALLET_ID, percentualValue: 20 }]
+        splits: [{ walletId: VENCER_HUB_WALLET_ID, percentualValue: 20 }],
+        notificationDisabled: true
       })
+
+      if (billingType === 'PIX') {
+        try {
+          const qrCodeData = await asaasFetch(`/payments/${payment.id}/pixQrCode`)
+          return new Response(JSON.stringify({ ...payment, pixQrCode: qrCodeData }), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
+        } catch (qrErr) {
+          console.error('[Pix QRCode Error]', qrErr.message)
+        }
+      }
+
       return new Response(JSON.stringify(payment), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }
 
@@ -197,7 +223,8 @@ serve(async (req) => {
         cycle: cycle || 'MONTHLY',
         description: `Plano ${planId} - Vencer Hub`,
         externalReference: user.id,
-        splits: [{ walletId: VENCER_HUB_WALLET_ID, percentualValue: 20 }]
+        splits: [{ walletId: VENCER_HUB_WALLET_ID, percentualValue: 20 }],
+        notificationDisabled: true
       })
       return new Response(JSON.stringify(subscription), { headers: { ...corsHeaders, 'Content-Type': 'application/json' } })
     }

@@ -8,7 +8,7 @@ import {
   Store, ChevronLeft, Briefcase, GraduationCap,
   Handshake, CreditCard, Sparkles, BookOpen, Settings2,
   AlertCircle, ChevronRight, Globe, LayoutGrid, Lock,
-  Rocket, ArrowRight, Eye
+  Rocket, ArrowRight, Eye, TrendingUp
 } from 'lucide-react';
 import { Logo } from './Logo';
 import { AIChatAgent } from './AIChatAgent';
@@ -73,14 +73,25 @@ export const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ child
       ]
     },
     { 
-      label: 'CRM & Vendas', 
+      label: 'CRM', 
       icon: Briefcase, 
-      to: '/business-suite',
+      to: '/business-suite?tab=crm',
       locked: (user.plan === 'basic' || isPreRegistration) && !isAdmin,
       minPlan: 'pro',
       subItems: [
-        { label: 'CRM (Pipeline)', to: '/business-suite?tab=crm' },
-        { label: 'Financeiro', to: '/business-suite?tab=finance' }
+        { label: 'Início', to: '/business-suite?tab=crm_home' },
+        { label: 'Pipeline de Vendas', to: '/business-suite?tab=crm' }
+      ]
+    },
+    { 
+      label: 'Financeiro', 
+      icon: TrendingUp, 
+      to: '/business-suite?tab=finance',
+      locked: (user.plan === 'basic' || isPreRegistration) && !isAdmin,
+      minPlan: 'pro',
+      subItems: [
+        { label: 'Início', to: '/business-suite?tab=finance_home' },
+        { label: 'Fluxo de Caixa', to: '/business-suite?tab=finance' }
       ]
     },
     { 
