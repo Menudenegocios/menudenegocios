@@ -74,7 +74,7 @@ const AppRoutes = () => {
       <Route path="/content-management" element={<ProtectedRoute><DashboardLayout><ContentManagement /></DashboardLayout></ProtectedRoute>} />
       <Route path="/marketplace-b2b" element={<ProtectedRoute><DashboardLayout><MarketplaceB2B /></DashboardLayout></ProtectedRoute>} />
       <Route path="/academy" element={<ProtectedRoute><DashboardLayout><Academy /></DashboardLayout></ProtectedRoute>} />
-      <Route path="/local-plus" element={<ProtectedRoute><DashboardLayout><LocalPlus /></DashboardLayout></ProtectedRoute>} />
+      <Route path="/menuclub" element={<ProtectedRoute><DashboardLayout><LocalPlus /></DashboardLayout></ProtectedRoute>} />
       <Route path="/bio-builder" element={<ProtectedRoute><DashboardLayout><BioBuilder /></DashboardLayout></ProtectedRoute>} />
       <Route path="/catalog" element={<ProtectedRoute><DashboardLayout><MyCatalog /></DashboardLayout></ProtectedRoute>} />
       <Route path="/profile" element={<ProtectedRoute><DashboardLayout><Profile /></DashboardLayout></ProtectedRoute>} />

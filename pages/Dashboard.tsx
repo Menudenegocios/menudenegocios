@@ -360,7 +360,7 @@ export const Dashboard: React.FC = () => {
       {/* Link Bônus Menu Club (Plano Full) */}
       {user.plan === 'full' && (
         <div className="mx-4 bg-gradient-to-r from-indigo-600 via-brand-primary to-purple-600 p-1 rounded-[2.5rem] shadow-xl animate-in fade-in slide-in-from-top-4 duration-700">
-          <Link to="/local-plus" className="flex flex-col md:flex-row items-center justify-between gap-6 bg-gray-900 rounded-[2.4rem] p-8 md:px-12 hover:bg-gray-900/90 transition-all group">
+          <Link to="/menuclub" className="flex flex-col md:flex-row items-center justify-between gap-6 bg-gray-900 rounded-[2.4rem] p-8 md:px-12 hover:bg-gray-900/90 transition-all group">
             <div className="flex items-center gap-6">
               <div className="w-16 h-16 bg-white/10 rounded-2xl flex items-center justify-center border border-white/20 group-hover:scale-110 transition-transform">
                 <Sparkles className="w-8 h-8 text-brand-primary" />

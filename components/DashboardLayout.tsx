@@ -131,14 +131,9 @@ export const DashboardLayout: React.FC<{ children: React.ReactNode }> = ({ child
     { 
       label: 'Menu Club', 
       icon: Sparkles, 
-      to: '/local-plus', 
+      to: '/menuclub', 
       locked: false, 
-      minPlan: 'pre-cadastro',
-      subItems: [
-        { label: 'Marketplace', to: '/local-plus?tab=home' },
-        { label: 'Negócios', to: '/local-plus?tab=match' },
-        { label: 'Categorias', to: '/local-plus?tab=categories' }
-      ]
+      minPlan: 'pre-cadastro'
     },
     { 
       label: 'Planos de adesão', 
